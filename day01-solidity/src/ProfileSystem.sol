@@ -5,7 +5,7 @@ contract ProfileSystem {
     struct UserProfile {
         string username;
         uint256 level;
-        uint256 lastUpdated;
+        uint48 lastUpdated;
         Role role;
     }
     mapping(address => UserProfile) public profiles;
@@ -20,20 +20,20 @@ contract ProfileSystem {
         _;
     }
     function createProfile(string calldata _name) external {
-        if (bytes(_name).length <= 0)
-            revert EmptyUsername();
-        if (profiles[msg.sender].level != 0)
-            revert UserAlreadyExists();
-        profiles[msg.sender].username = _name;
-        profiles[msg.sender].level = 1;
-        profiles[msg.sender].role = Role.USER;
-        profiles[msg.sender].lastUpdated = block.timestamp;
+        if (bytes(_name).length == 0) revert EmptyUsername();
+        if (profiles[msg.sender].level != 0) revert UserAlreadyExists();
+        profiles[msg.sender] = UserProfile({
+        username: _name,
+        level: 1,
+        lastUpdated: uint48(block.timestamp),
+        role: Role.USER
+        });
         emit ProfileCreated(msg.sender, _name);
     }
 
     function levelUp() external onlyRegistered {
         profiles[msg.sender].level += 1;
-        profiles[msg.sender].lastUpdated = block.timestamp;
+        profiles[msg.sender].lastUpdated = uint48(block.timestamp);
         emit LevelUp(msg.sender, profiles[msg.sender].level);
     }
 
