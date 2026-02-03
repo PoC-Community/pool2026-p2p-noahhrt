@@ -1,4 +1,6 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
+
 interface ISmartContract {
     enum roleEnum {STUDENT, TEACHER}
     struct Informations {
